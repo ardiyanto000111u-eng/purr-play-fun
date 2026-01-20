@@ -9,7 +9,7 @@ interface ButterflyProps {
   onCatch?: () => void;
 }
 
-const Butterfly = ({ x, y, size = 60, color = "#FFD93D", direction = 0, onCatch }: ButterflyProps) => {
+const Butterfly = ({ x, y, size = 110, color = "#FFD93D", direction = 0, onCatch }: ButterflyProps) => {
   // Slight tilt based on movement direction
   const tiltAngle = (direction * 180 / Math.PI) * 0.3;
   

@@ -9,7 +9,7 @@ interface FishProps {
   onCatch?: () => void;
 }
 
-const Fish = ({ x, y, size = 60, color = "#FF7B54", direction = 0, onCatch }: FishProps) => {
+const Fish = ({ x, y, size = 120, color = "#FF7B54", direction = 0, onCatch }: FishProps) => {
   // Flip fish based on direction (facing left or right)
   const facingLeft = Math.abs(direction) > Math.PI / 2;
   
