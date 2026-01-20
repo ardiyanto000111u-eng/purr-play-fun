@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Fish from "./animals/Fish";
 import Mouse from "./animals/Mouse";
@@ -11,7 +11,10 @@ interface Animal {
   type: AnimalType;
   x: number;
   y: number;
+  targetX: number;
+  targetY: number;
   color?: string;
+  direction: number; // angle in radians
 }
 
 interface PlayAreaProps {
@@ -34,6 +37,7 @@ const PlayArea = ({ selectedAnimals, speed, background, onCatch }: PlayAreaProps
   const [animals, setAnimals] = useState<Animal[]>([]);
   const [dimensions, setDimensions] = useState({ width: 0, height: 0 });
   const [catchEffects, setCatchEffects] = useState<{ id: string; x: number; y: number }[]>([]);
+  const animationRef = useRef<number>();
 
   useEffect(() => {
     const updateDimensions = () => {
@@ -47,21 +51,33 @@ const PlayArea = ({ selectedAnimals, speed, background, onCatch }: PlayAreaProps
     return () => window.removeEventListener("resize", updateDimensions);
   }, []);
 
+  const getRandomPosition = useCallback((padding = 80) => {
+    return {
+      x: Math.random() * (dimensions.width - padding * 2) + padding,
+      y: Math.random() * (dimensions.height - padding * 2) + padding,
+    };
+  }, [dimensions]);
+
   const createAnimal = useCallback((type: AnimalType): Animal => {
-    const padding = 100;
+    const pos = getRandomPosition();
+    const target = getRandomPosition();
     return {
       id: `${type}-${Date.now()}-${Math.random()}`,
       type,
-      x: Math.random() * (dimensions.width - padding * 2) + padding,
-      y: Math.random() * (dimensions.height - padding * 2) + padding,
+      x: pos.x,
+      y: pos.y,
+      targetX: target.x,
+      targetY: target.y,
+      direction: Math.atan2(target.y - pos.y, target.x - pos.x),
       color: type === "fish" 
         ? fishColors[Math.floor(Math.random() * fishColors.length)]
         : type === "butterfly"
         ? butterflyColors[Math.floor(Math.random() * butterflyColors.length)]
         : undefined,
     };
-  }, [dimensions]);
+  }, [getRandomPosition]);
 
+  // Initialize animals
   useEffect(() => {
     if (dimensions.width === 0) return;
     
@@ -72,25 +88,75 @@ const PlayArea = ({ selectedAnimals, speed, background, onCatch }: PlayAreaProps
       }
     });
     setAnimals(initialAnimals);
-  }, [selectedAnimals, dimensions, createAnimal]);
+  }, [selectedAnimals, dimensions.width, createAnimal]);
 
+  // Smooth animation loop
   useEffect(() => {
-    if (dimensions.width === 0) return;
-    
-    const interval = setInterval(() => {
-      setAnimals(prev => 
-        prev.map(animal => ({
-          ...animal,
-          x: Math.max(50, Math.min(dimensions.width - 100, 
-            animal.x + (Math.random() - 0.5) * 100 * speed)),
-          y: Math.max(50, Math.min(dimensions.height - 100, 
-            animal.y + (Math.random() - 0.5) * 80 * speed)),
-        }))
-      );
-    }, 2000 / speed);
+    if (dimensions.width === 0 || animals.length === 0) return;
 
-    return () => clearInterval(interval);
-  }, [dimensions, speed]);
+    const moveSpeed = {
+      fish: 1.5 * speed,
+      mouse: 3 * speed,
+      butterfly: 2 * speed,
+    };
+
+    const animate = () => {
+      setAnimals(prevAnimals => 
+        prevAnimals.map(animal => {
+          const dx = animal.targetX - animal.x;
+          const dy = animal.targetY - animal.y;
+          const distance = Math.sqrt(dx * dx + dy * dy);
+          
+          // If close to target, pick a new target
+          if (distance < 20) {
+            const newTarget = getRandomPosition();
+            return {
+              ...animal,
+              targetX: newTarget.x,
+              targetY: newTarget.y,
+              direction: Math.atan2(newTarget.y - animal.y, newTarget.x - animal.x),
+            };
+          }
+
+          // Move towards target with type-specific speed
+          const animalSpeed = moveSpeed[animal.type];
+          const angle = Math.atan2(dy, dx);
+          
+          // Add some wobble based on animal type
+          let wobble = 0;
+          if (animal.type === "butterfly") {
+            wobble = Math.sin(Date.now() / 200) * 2;
+          } else if (animal.type === "fish") {
+            wobble = Math.sin(Date.now() / 300) * 1;
+          }
+
+          const newX = animal.x + Math.cos(angle) * animalSpeed + Math.cos(angle + Math.PI/2) * wobble;
+          const newY = animal.y + Math.sin(angle) * animalSpeed + Math.sin(angle + Math.PI/2) * wobble;
+
+          // Keep within bounds
+          const padding = 60;
+          const boundedX = Math.max(padding, Math.min(dimensions.width - padding, newX));
+          const boundedY = Math.max(padding, Math.min(dimensions.height - padding, newY));
+
+          return {
+            ...animal,
+            x: boundedX,
+            y: boundedY,
+            direction: angle,
+          };
+        })
+      );
+
+      animationRef.current = requestAnimationFrame(animate);
+    };
+
+    animationRef.current = requestAnimationFrame(animate);
+    return () => {
+      if (animationRef.current) {
+        cancelAnimationFrame(animationRef.current);
+      }
+    };
+  }, [dimensions, speed, getRandomPosition, animals.length]);
 
   const handleCatch = (animal: Animal) => {
     onCatch();
@@ -101,10 +167,13 @@ const PlayArea = ({ selectedAnimals, speed, background, onCatch }: PlayAreaProps
       setCatchEffects(prev => prev.filter(e => e.id !== animal.id));
     }, 500);
 
-    // Remove caught animal and add new one
+    // Remove caught animal and add new one after a delay
     setAnimals(prev => {
       const filtered = prev.filter(a => a.id !== animal.id);
-      return [...filtered, createAnimal(animal.type)];
+      setTimeout(() => {
+        setAnimals(current => [...current, createAnimal(animal.type)]);
+      }, 800);
+      return filtered;
     });
   };
 
@@ -113,6 +182,7 @@ const PlayArea = ({ selectedAnimals, speed, background, onCatch }: PlayAreaProps
       key: animal.id,
       x: animal.x,
       y: animal.y,
+      direction: animal.direction,
       onCatch: () => handleCatch(animal),
     };
 

@@ -4,30 +4,37 @@ interface MouseProps {
   x: number;
   y: number;
   size?: number;
+  direction?: number;
   onCatch?: () => void;
 }
 
-const Mouse = ({ x, y, size = 50, onCatch }: MouseProps) => {
+const Mouse = ({ x, y, size = 50, direction = 0, onCatch }: MouseProps) => {
+  // Flip mouse based on direction
+  const facingLeft = Math.abs(direction) > Math.PI / 2;
+  
   return (
     <motion.div
       className="absolute cursor-pointer select-none"
-      style={{ left: x, top: y }}
-      whileTap={{ scale: 0.7, rotate: 45 }}
+      style={{ 
+        left: x - size / 2, 
+        top: y - size * 0.4,
+        transform: `scaleX(${facingLeft ? -1 : 1})`,
+      }}
+      initial={{ opacity: 0, scale: 0 }}
+      animate={{ opacity: 1, scale: 1 }}
+      exit={{ opacity: 0, scale: 0, y: -20 }}
+      whileTap={{ scale: 0.5, rotate: 45 }}
       onTap={onCatch}
-      drag
-      dragConstraints={{ left: 0, right: 0, top: 0, bottom: 0 }}
-      dragElastic={0.1}
     >
       <motion.svg
         width={size}
         height={size * 0.8}
         viewBox="0 0 80 64"
         animate={{
-          x: [0, 20, 0, -20, 0],
-          y: [0, -5, 0, -5, 0],
+          y: [0, -3, 0, -3, 0],
         }}
         transition={{
-          duration: 1.8,
+          duration: 0.2,
           repeat: Infinity,
           ease: "easeInOut",
         }}
@@ -39,8 +46,8 @@ const Mouse = ({ x, y, size = 50, onCatch }: MouseProps) => {
           rx="25"
           ry="18"
           fill="#8B8B8B"
-          animate={{ scaleX: [1, 0.95, 1.05, 1] }}
-          transition={{ duration: 0.5, repeat: Infinity }}
+          animate={{ scaleX: [1, 0.92, 1.08, 1] }}
+          transition={{ duration: 0.15, repeat: Infinity }}
         />
         {/* Head */}
         <circle cx="18" cy="35" r="15" fill="#9A9A9A" />
@@ -50,16 +57,16 @@ const Mouse = ({ x, y, size = 50, onCatch }: MouseProps) => {
           cy="22"
           r="10"
           fill="#CCCCCC"
-          animate={{ scale: [1, 1.1, 1] }}
-          transition={{ duration: 0.8, repeat: Infinity }}
+          animate={{ scale: [1, 1.15, 1] }}
+          transition={{ duration: 0.3, repeat: Infinity }}
         />
         <motion.circle
           cx="28"
           cy="22"
           r="10"
           fill="#CCCCCC"
-          animate={{ scale: [1, 1.1, 1] }}
-          transition={{ duration: 0.8, repeat: Infinity, delay: 0.2 }}
+          animate={{ scale: [1, 1.15, 1] }}
+          transition={{ duration: 0.3, repeat: Infinity, delay: 0.1 }}
         />
         <circle cx="8" cy="22" r="5" fill="#FFB5B5" />
         <circle cx="28" cy="22" r="5" fill="#FFB5B5" />
@@ -83,13 +90,12 @@ const Mouse = ({ x, y, size = 50, onCatch }: MouseProps) => {
           strokeLinecap="round"
           animate={{
             d: [
-              "M65 40 Q80 35 78 55",
-              "M65 40 Q85 40 80 60",
-              "M65 40 Q80 45 78 55",
-              "M65 40 Q80 35 78 55",
+              "M65 40 Q80 30 78 50",
+              "M65 40 Q85 45 80 60",
+              "M65 40 Q80 30 78 50",
             ],
           }}
-          transition={{ duration: 0.6, repeat: Infinity }}
+          transition={{ duration: 0.2, repeat: Infinity }}
         />
       </motion.svg>
     </motion.div>

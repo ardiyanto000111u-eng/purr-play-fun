@@ -5,30 +5,37 @@ interface FishProps {
   y: number;
   size?: number;
   color?: string;
+  direction?: number;
   onCatch?: () => void;
 }
 
-const Fish = ({ x, y, size = 60, color = "#FF7B54", onCatch }: FishProps) => {
+const Fish = ({ x, y, size = 60, color = "#FF7B54", direction = 0, onCatch }: FishProps) => {
+  // Flip fish based on direction (facing left or right)
+  const facingLeft = Math.abs(direction) > Math.PI / 2;
+  
   return (
     <motion.div
       className="absolute cursor-pointer select-none"
-      style={{ left: x, top: y }}
-      whileTap={{ scale: 0.8, opacity: 0.5 }}
+      style={{ 
+        left: x - size / 2, 
+        top: y - size * 0.3,
+        transform: `scaleX(${facingLeft ? -1 : 1})`,
+      }}
+      initial={{ opacity: 0, scale: 0 }}
+      animate={{ opacity: 1, scale: 1 }}
+      exit={{ opacity: 0, scale: 0, rotate: 360 }}
+      whileTap={{ scale: 0.6, opacity: 0.3 }}
       onTap={onCatch}
-      drag
-      dragConstraints={{ left: 0, right: 0, top: 0, bottom: 0 }}
-      dragElastic={0.1}
     >
       <motion.svg
         width={size}
         height={size * 0.6}
         viewBox="0 0 100 60"
         animate={{
-          x: [0, 15, 0, -15, 0],
-          rotate: [0, 8, 0, -8, 0],
+          rotate: [0, 5, 0, -5, 0],
         }}
         transition={{
-          duration: 2.5,
+          duration: 0.8,
           repeat: Infinity,
           ease: "easeInOut",
         }}
@@ -41,7 +48,7 @@ const Fish = ({ x, y, size = 60, color = "#FF7B54", onCatch }: FishProps) => {
           ry="20"
           fill={color}
           animate={{ scaleY: [1, 0.95, 1, 1.05, 1] }}
-          transition={{ duration: 1.5, repeat: Infinity }}
+          transition={{ duration: 0.5, repeat: Infinity }}
         />
         {/* Tail */}
         <motion.path
@@ -50,11 +57,11 @@ const Fish = ({ x, y, size = 60, color = "#FF7B54", onCatch }: FishProps) => {
           animate={{ 
             d: [
               "M75 30 L100 10 L100 50 Z",
-              "M75 30 L100 15 L100 45 Z",
+              "M75 30 L100 20 L100 40 Z",
               "M75 30 L100 10 L100 50 Z",
             ]
           }}
-          transition={{ duration: 0.8, repeat: Infinity }}
+          transition={{ duration: 0.3, repeat: Infinity }}
         />
         {/* Eye */}
         <circle cx="25" cy="25" r="6" fill="white" />
@@ -64,8 +71,8 @@ const Fish = ({ x, y, size = 60, color = "#FF7B54", onCatch }: FishProps) => {
           d="M40 12 L50 0 L55 15 Z"
           fill={color}
           opacity={0.8}
-          animate={{ rotate: [0, -10, 0, 10, 0] }}
-          transition={{ duration: 1, repeat: Infinity }}
+          animate={{ rotate: [0, -15, 0, 15, 0] }}
+          transition={{ duration: 0.4, repeat: Infinity }}
           style={{ transformOrigin: "50% 100%" }}
         />
         {/* Scales shimmer */}
@@ -76,8 +83,8 @@ const Fish = ({ x, y, size = 60, color = "#FF7B54", onCatch }: FishProps) => {
           ry="5"
           fill="white"
           opacity={0.3}
-          animate={{ opacity: [0.2, 0.4, 0.2] }}
-          transition={{ duration: 1.5, repeat: Infinity }}
+          animate={{ opacity: [0.2, 0.5, 0.2] }}
+          transition={{ duration: 1, repeat: Infinity }}
         />
       </motion.svg>
     </motion.div>
