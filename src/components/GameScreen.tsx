@@ -28,6 +28,7 @@ const GameScreen = ({ selectedAnimals, onExit }: GameScreenProps) => {
         selectedAnimals={selectedAnimals}
         speed={speed}
         background={background}
+        soundEnabled={soundEnabled}
         onCatch={handleCatch}
       />
 

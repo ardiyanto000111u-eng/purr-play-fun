@@ -10,7 +10,6 @@ interface ButterflyProps {
 }
 
 const Butterfly = ({ x, y, size = 110, color = "#FFD93D", direction = 0, onCatch }: ButterflyProps) => {
-  // Slight tilt based on movement direction
   const tiltAngle = (direction * 180 / Math.PI) * 0.3;
   
   return (
@@ -19,6 +18,7 @@ const Butterfly = ({ x, y, size = 110, color = "#FFD93D", direction = 0, onCatch
       style={{ 
         left: x - size / 2, 
         top: y - size / 2,
+        filter: "drop-shadow(0 0 20px rgba(255, 255, 255, 0.9)) drop-shadow(0 0 35px rgba(255, 220, 100, 0.6))",
       }}
       initial={{ opacity: 0, scale: 0 }}
       animate={{ opacity: 1, scale: 1, rotate: tiltAngle }}
@@ -39,6 +39,10 @@ const Butterfly = ({ x, y, size = 110, color = "#FFD93D", direction = 0, onCatch
           ease: "easeInOut",
         }}
       >
+        {/* Glow layers */}
+        <ellipse cx="25" cy="35" rx="25" ry="30" fill={color} opacity={0.3} filter="blur(8px)" />
+        <ellipse cx="55" cy="35" rx="25" ry="30" fill={color} opacity={0.3} filter="blur(8px)" />
+        
         {/* Left wing */}
         <motion.ellipse
           cx="25"
@@ -46,6 +50,8 @@ const Butterfly = ({ x, y, size = 110, color = "#FFD93D", direction = 0, onCatch
           rx="22"
           ry="28"
           fill={color}
+          stroke="white"
+          strokeWidth="2"
           animate={{ 
             scaleX: [1, 0.2, 1],
             rotate: [-15, -5, -15]
@@ -60,6 +66,8 @@ const Butterfly = ({ x, y, size = 110, color = "#FFD93D", direction = 0, onCatch
           rx="22"
           ry="28"
           fill={color}
+          stroke="white"
+          strokeWidth="2"
           animate={{ 
             scaleX: [1, 0.2, 1],
             rotate: [15, 5, 15]
@@ -67,48 +75,72 @@ const Butterfly = ({ x, y, size = 110, color = "#FFD93D", direction = 0, onCatch
           transition={{ duration: 0.15, repeat: Infinity }}
           style={{ transformOrigin: "40px 40px" }}
         />
-        {/* Wing patterns */}
+        {/* Wing patterns - inner circles */}
         <motion.circle
           cx="20"
           cy="30"
-          r="8"
-          fill="hsl(15 75% 60%)"
-          opacity={0.7}
+          r="10"
+          fill="hsl(15 75% 55%)"
+          stroke="white"
+          strokeWidth="1"
           animate={{ scaleX: [1, 0.2, 1] }}
           transition={{ duration: 0.15, repeat: Infinity }}
         />
         <motion.circle
           cx="60"
           cy="30"
-          r="8"
-          fill="hsl(15 75% 60%)"
+          r="10"
+          fill="hsl(15 75% 55%)"
+          stroke="white"
+          strokeWidth="1"
+          animate={{ scaleX: [1, 0.2, 1] }}
+          transition={{ duration: 0.15, repeat: Infinity }}
+        />
+        {/* Wing patterns - small dots */}
+        <motion.circle
+          cx="18"
+          cy="45"
+          r="5"
+          fill="white"
+          opacity={0.7}
+          animate={{ scaleX: [1, 0.2, 1] }}
+          transition={{ duration: 0.15, repeat: Infinity }}
+        />
+        <motion.circle
+          cx="62"
+          cy="45"
+          r="5"
+          fill="white"
           opacity={0.7}
           animate={{ scaleX: [1, 0.2, 1] }}
           transition={{ duration: 0.15, repeat: Infinity }}
         />
         {/* Body */}
-        <ellipse cx="40" cy="45" rx="4" ry="18" fill="#333" />
+        <ellipse cx="40" cy="45" rx="5" ry="20" fill="#333" stroke="white" strokeWidth="1" />
         {/* Head */}
-        <circle cx="40" cy="22" r="5" fill="#333" />
+        <circle cx="40" cy="22" r="6" fill="#333" stroke="white" strokeWidth="1" />
+        {/* Eyes */}
+        <circle cx="37" cy="21" r="2" fill="white" />
+        <circle cx="43" cy="21" r="2" fill="white" />
         {/* Antennae */}
         <motion.path
-          d="M38 18 Q35 8 30 5"
+          d="M38 17 Q34 6 28 3"
           stroke="#333"
           strokeWidth="2"
           fill="none"
-          animate={{ d: ["M38 18 Q35 8 30 5", "M38 18 Q33 10 28 8", "M38 18 Q35 8 30 5"] }}
+          animate={{ d: ["M38 17 Q34 6 28 3", "M38 17 Q32 8 26 6", "M38 17 Q34 6 28 3"] }}
           transition={{ duration: 0.3, repeat: Infinity }}
         />
         <motion.path
-          d="M42 18 Q45 8 50 5"
+          d="M42 17 Q46 6 52 3"
           stroke="#333"
           strokeWidth="2"
           fill="none"
-          animate={{ d: ["M42 18 Q45 8 50 5", "M42 18 Q47 10 52 8", "M42 18 Q45 8 50 5"] }}
+          animate={{ d: ["M42 17 Q46 6 52 3", "M42 17 Q48 8 54 6", "M42 17 Q46 6 52 3"] }}
           transition={{ duration: 0.3, repeat: Infinity }}
         />
-        <circle cx="30" cy="5" r="2" fill="#333" />
-        <circle cx="50" cy="5" r="2" fill="#333" />
+        <circle cx="28" cy="3" r="3" fill="#333" />
+        <circle cx="52" cy="3" r="3" fill="#333" />
       </motion.svg>
     </motion.div>
   );

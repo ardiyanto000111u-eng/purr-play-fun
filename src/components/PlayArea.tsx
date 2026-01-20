@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import Fish from "./animals/Fish";
 import Mouse from "./animals/Mouse";
 import Butterfly from "./animals/Butterfly";
+import { playFishSound, playMouseSound, playButterflySound, playCatchSound } from "@/utils/sounds";
 
 type AnimalType = "fish" | "mouse" | "butterfly";
 
@@ -21,6 +22,7 @@ interface PlayAreaProps {
   selectedAnimals: AnimalType[];
   speed: number;
   background: "water" | "grass" | "floor";
+  soundEnabled: boolean;
   onCatch: () => void;
 }
 
@@ -33,7 +35,7 @@ const backgrounds = {
 const fishColors = ["#FF7B54", "#FFB26B", "#FF6B6B", "#4ECDC4", "#45B7D1"];
 const butterflyColors = ["#FFD93D", "#FF6B9D", "#C44EFF", "#4ECDC4", "#FF8C42"];
 
-const PlayArea = ({ selectedAnimals, speed, background, onCatch }: PlayAreaProps) => {
+const PlayArea = ({ selectedAnimals, speed, background, soundEnabled, onCatch }: PlayAreaProps) => {
   const [animals, setAnimals] = useState<Animal[]>([]);
   const [dimensions, setDimensions] = useState({ width: 0, height: 0 });
   const [catchEffects, setCatchEffects] = useState<{ id: string; x: number; y: number }[]>([]);
@@ -160,6 +162,22 @@ const PlayArea = ({ selectedAnimals, speed, background, onCatch }: PlayAreaProps
 
   const handleCatch = (animal: Animal) => {
     onCatch();
+    
+    // Play animal-specific sound
+    if (soundEnabled) {
+      switch (animal.type) {
+        case "fish":
+          playFishSound();
+          break;
+        case "mouse":
+          playMouseSound();
+          break;
+        case "butterfly":
+          playButterflySound();
+          break;
+      }
+      playCatchSound();
+    }
     
     // Add catch effect
     setCatchEffects(prev => [...prev, { id: animal.id, x: animal.x, y: animal.y }]);
