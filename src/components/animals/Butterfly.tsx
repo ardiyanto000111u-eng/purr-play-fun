@@ -5,31 +5,36 @@ interface ButterflyProps {
   y: number;
   size?: number;
   color?: string;
+  direction?: number;
   onCatch?: () => void;
 }
 
-const Butterfly = ({ x, y, size = 60, color = "#FFD93D", onCatch }: ButterflyProps) => {
+const Butterfly = ({ x, y, size = 60, color = "#FFD93D", direction = 0, onCatch }: ButterflyProps) => {
+  // Slight tilt based on movement direction
+  const tiltAngle = (direction * 180 / Math.PI) * 0.3;
+  
   return (
     <motion.div
       className="absolute cursor-pointer select-none"
-      style={{ left: x, top: y }}
-      whileTap={{ scale: 0.5, opacity: 0.3 }}
+      style={{ 
+        left: x - size / 2, 
+        top: y - size / 2,
+      }}
+      initial={{ opacity: 0, scale: 0 }}
+      animate={{ opacity: 1, scale: 1, rotate: tiltAngle }}
+      exit={{ opacity: 0, scale: 0, y: -50 }}
+      whileTap={{ scale: 0.3, opacity: 0.2 }}
       onTap={onCatch}
-      drag
-      dragConstraints={{ left: 0, right: 0, top: 0, bottom: 0 }}
-      dragElastic={0.1}
     >
       <motion.svg
         width={size}
         height={size}
         viewBox="0 0 80 80"
         animate={{
-          y: [0, -30, 0, -20, 0],
-          x: [0, 15, -15, 10, 0],
-          rotate: [0, 5, -5, 3, 0],
+          y: [0, -8, 0, -5, 0],
         }}
         transition={{
-          duration: 4,
+          duration: 0.6,
           repeat: Infinity,
           ease: "easeInOut",
         }}
@@ -42,10 +47,10 @@ const Butterfly = ({ x, y, size = 60, color = "#FFD93D", onCatch }: ButterflyPro
           ry="28"
           fill={color}
           animate={{ 
-            scaleX: [1, 0.3, 1],
+            scaleX: [1, 0.2, 1],
             rotate: [-15, -5, -15]
           }}
-          transition={{ duration: 0.3, repeat: Infinity }}
+          transition={{ duration: 0.15, repeat: Infinity }}
           style={{ transformOrigin: "40px 40px" }}
         />
         {/* Right wing */}
@@ -56,10 +61,10 @@ const Butterfly = ({ x, y, size = 60, color = "#FFD93D", onCatch }: ButterflyPro
           ry="28"
           fill={color}
           animate={{ 
-            scaleX: [1, 0.3, 1],
+            scaleX: [1, 0.2, 1],
             rotate: [15, 5, 15]
           }}
-          transition={{ duration: 0.3, repeat: Infinity }}
+          transition={{ duration: 0.15, repeat: Infinity }}
           style={{ transformOrigin: "40px 40px" }}
         />
         {/* Wing patterns */}
@@ -69,8 +74,8 @@ const Butterfly = ({ x, y, size = 60, color = "#FFD93D", onCatch }: ButterflyPro
           r="8"
           fill="hsl(15 75% 60%)"
           opacity={0.7}
-          animate={{ scaleX: [1, 0.3, 1] }}
-          transition={{ duration: 0.3, repeat: Infinity }}
+          animate={{ scaleX: [1, 0.2, 1] }}
+          transition={{ duration: 0.15, repeat: Infinity }}
         />
         <motion.circle
           cx="60"
@@ -78,8 +83,8 @@ const Butterfly = ({ x, y, size = 60, color = "#FFD93D", onCatch }: ButterflyPro
           r="8"
           fill="hsl(15 75% 60%)"
           opacity={0.7}
-          animate={{ scaleX: [1, 0.3, 1] }}
-          transition={{ duration: 0.3, repeat: Infinity }}
+          animate={{ scaleX: [1, 0.2, 1] }}
+          transition={{ duration: 0.15, repeat: Infinity }}
         />
         {/* Body */}
         <ellipse cx="40" cy="45" rx="4" ry="18" fill="#333" />
@@ -92,7 +97,7 @@ const Butterfly = ({ x, y, size = 60, color = "#FFD93D", onCatch }: ButterflyPro
           strokeWidth="2"
           fill="none"
           animate={{ d: ["M38 18 Q35 8 30 5", "M38 18 Q33 10 28 8", "M38 18 Q35 8 30 5"] }}
-          transition={{ duration: 0.5, repeat: Infinity }}
+          transition={{ duration: 0.3, repeat: Infinity }}
         />
         <motion.path
           d="M42 18 Q45 8 50 5"
@@ -100,7 +105,7 @@ const Butterfly = ({ x, y, size = 60, color = "#FFD93D", onCatch }: ButterflyPro
           strokeWidth="2"
           fill="none"
           animate={{ d: ["M42 18 Q45 8 50 5", "M42 18 Q47 10 52 8", "M42 18 Q45 8 50 5"] }}
-          transition={{ duration: 0.5, repeat: Infinity }}
+          transition={{ duration: 0.3, repeat: Infinity }}
         />
         <circle cx="30" cy="5" r="2" fill="#333" />
         <circle cx="50" cy="5" r="2" fill="#333" />
