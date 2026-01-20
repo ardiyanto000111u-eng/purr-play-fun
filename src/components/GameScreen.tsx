@@ -3,7 +3,7 @@ import PlayArea from "./PlayArea";
 import GameHeader from "./GameHeader";
 import SettingsPanel from "./SettingsPanel";
 
-type AnimalType = "fish" | "mouse" | "butterfly";
+type AnimalType = "fish" | "mouse" | "butterfly" | "laser" | "ladybug" | "bird";
 
 interface GameScreenProps {
   selectedAnimals: AnimalType[];

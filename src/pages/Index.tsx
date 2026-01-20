@@ -2,7 +2,7 @@ import { useState } from "react";
 import HomeScreen from "@/components/HomeScreen";
 import GameScreen from "@/components/GameScreen";
 
-type AnimalType = "fish" | "mouse" | "butterfly";
+type AnimalType = "fish" | "mouse" | "butterfly" | "laser" | "ladybug" | "bird";
 
 const Index = () => {
   const [isPlaying, setIsPlaying] = useState(false);
