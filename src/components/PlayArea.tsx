@@ -25,9 +25,9 @@ interface PlayAreaProps {
 }
 
 const backgrounds = {
-  water: "bg-gradient-to-b from-kitten-sky to-kitten-water",
-  grass: "bg-gradient-to-b from-kitten-grass to-emerald-600",
-  floor: "bg-gradient-to-b from-amber-100 to-amber-200",
+  water: "bg-gradient-to-b from-blue-600 to-blue-800",
+  grass: "bg-gradient-to-b from-green-600 to-green-800",
+  floor: "bg-gradient-to-b from-amber-600 to-amber-800",
 };
 
 const fishColors = ["#FF7B54", "#FFB26B", "#FF6B6B", "#4ECDC4", "#45B7D1"];

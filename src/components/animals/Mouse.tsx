@@ -8,7 +8,7 @@ interface MouseProps {
   onCatch?: () => void;
 }
 
-const Mouse = ({ x, y, size = 50, direction = 0, onCatch }: MouseProps) => {
+const Mouse = ({ x, y, size = 100, direction = 0, onCatch }: MouseProps) => {
   // Flip mouse based on direction
   const facingLeft = Math.abs(direction) > Math.PI / 2;
   
