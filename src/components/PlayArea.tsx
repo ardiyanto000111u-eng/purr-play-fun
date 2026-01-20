@@ -3,9 +3,20 @@ import { motion, AnimatePresence } from "framer-motion";
 import Fish from "./animals/Fish";
 import Mouse from "./animals/Mouse";
 import Butterfly from "./animals/Butterfly";
-import { playFishSound, playMouseSound, playButterflySound, playCatchSound } from "@/utils/sounds";
+import LaserDot from "./animals/LaserDot";
+import Ladybug from "./animals/Ladybug";
+import Bird from "./animals/Bird";
+import { 
+  playFishSound, 
+  playMouseSound, 
+  playButterflySound, 
+  playLaserSound,
+  playLadybugSound,
+  playBirdSound,
+  playCatchSound 
+} from "@/utils/sounds";
 
-type AnimalType = "fish" | "mouse" | "butterfly";
+type AnimalType = "fish" | "mouse" | "butterfly" | "laser" | "ladybug" | "bird";
 
 interface Animal {
   id: string;
@@ -15,7 +26,7 @@ interface Animal {
   targetX: number;
   targetY: number;
   color?: string;
-  direction: number; // angle in radians
+  direction: number;
 }
 
 interface PlayAreaProps {
@@ -34,6 +45,7 @@ const backgrounds = {
 
 const fishColors = ["#FF7B54", "#FFB26B", "#FF6B6B", "#4ECDC4", "#45B7D1"];
 const butterflyColors = ["#FFD93D", "#FF6B9D", "#C44EFF", "#4ECDC4", "#FF8C42"];
+const birdColors = ["#5DADE2", "#58D68D", "#F4D03F", "#EC7063", "#AF7AC5"];
 
 const PlayArea = ({ selectedAnimals, speed, background, soundEnabled, onCatch }: PlayAreaProps) => {
   const [animals, setAnimals] = useState<Animal[]>([]);
@@ -75,6 +87,8 @@ const PlayArea = ({ selectedAnimals, speed, background, soundEnabled, onCatch }:
         ? fishColors[Math.floor(Math.random() * fishColors.length)]
         : type === "butterfly"
         ? butterflyColors[Math.floor(Math.random() * butterflyColors.length)]
+        : type === "bird"
+        ? birdColors[Math.floor(Math.random() * birdColors.length)]
         : undefined,
     };
   }, [getRandomPosition]);
@@ -96,10 +110,13 @@ const PlayArea = ({ selectedAnimals, speed, background, soundEnabled, onCatch }:
   useEffect(() => {
     if (dimensions.width === 0 || animals.length === 0) return;
 
-    const moveSpeed = {
+    const moveSpeed: Record<AnimalType, number> = {
       fish: 1.5 * speed,
       mouse: 3 * speed,
       butterfly: 2 * speed,
+      laser: 5 * speed,
+      ladybug: 1.8 * speed,
+      bird: 2.5 * speed,
     };
 
     const animate = () => {
@@ -130,6 +147,10 @@ const PlayArea = ({ selectedAnimals, speed, background, soundEnabled, onCatch }:
             wobble = Math.sin(Date.now() / 200) * 2;
           } else if (animal.type === "fish") {
             wobble = Math.sin(Date.now() / 300) * 1;
+          } else if (animal.type === "laser") {
+            wobble = Math.sin(Date.now() / 50) * 4;
+          } else if (animal.type === "bird") {
+            wobble = Math.sin(Date.now() / 250) * 1.5;
           }
 
           const newX = animal.x + Math.cos(angle) * animalSpeed + Math.cos(angle + Math.PI/2) * wobble;
@@ -175,6 +196,15 @@ const PlayArea = ({ selectedAnimals, speed, background, soundEnabled, onCatch }:
         case "butterfly":
           playButterflySound();
           break;
+        case "laser":
+          playLaserSound();
+          break;
+        case "ladybug":
+          playLadybugSound();
+          break;
+        case "bird":
+          playBirdSound();
+          break;
       }
       playCatchSound();
     }
@@ -211,6 +241,12 @@ const PlayArea = ({ selectedAnimals, speed, background, soundEnabled, onCatch }:
         return <Mouse {...props} />;
       case "butterfly":
         return <Butterfly {...props} color={animal.color} />;
+      case "laser":
+        return <LaserDot {...props} />;
+      case "ladybug":
+        return <Ladybug {...props} />;
+      case "bird":
+        return <Bird {...props} color={animal.color} />;
     }
   };
 

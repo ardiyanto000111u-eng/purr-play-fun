@@ -119,3 +119,75 @@ export const playCatchSound = () => {
   oscillator.start(now);
   oscillator.stop(now + 0.35);
 };
+
+// Laser dot zap sound
+export const playLaserSound = () => {
+  const ctx = getAudioContext();
+  const now = ctx.currentTime;
+
+  const oscillator = ctx.createOscillator();
+  const gainNode = ctx.createGain();
+
+  oscillator.type = "sawtooth";
+  oscillator.frequency.setValueAtTime(800, now);
+  oscillator.frequency.exponentialRampToValueAtTime(200, now + 0.1);
+
+  gainNode.gain.setValueAtTime(0.15, now);
+  gainNode.gain.exponentialRampToValueAtTime(0.01, now + 0.12);
+
+  oscillator.connect(gainNode);
+  gainNode.connect(ctx.destination);
+
+  oscillator.start(now);
+  oscillator.stop(now + 0.15);
+};
+
+// Ladybug crawl/click sound
+export const playLadybugSound = () => {
+  const ctx = getAudioContext();
+  const now = ctx.currentTime;
+
+  // Multiple quick clicks
+  for (let i = 0; i < 3; i++) {
+    const oscillator = ctx.createOscillator();
+    const gainNode = ctx.createGain();
+
+    oscillator.type = "square";
+    oscillator.frequency.setValueAtTime(600 + i * 100, now + i * 0.03);
+
+    gainNode.gain.setValueAtTime(0.1, now + i * 0.03);
+    gainNode.gain.exponentialRampToValueAtTime(0.01, now + 0.05 + i * 0.03);
+
+    oscillator.connect(gainNode);
+    gainNode.connect(ctx.destination);
+
+    oscillator.start(now + i * 0.03);
+    oscillator.stop(now + 0.06 + i * 0.03);
+  }
+};
+
+// Bird chirp sound
+export const playBirdSound = () => {
+  const ctx = getAudioContext();
+  const now = ctx.currentTime;
+
+  // Two-tone chirp
+  for (let i = 0; i < 2; i++) {
+    const oscillator = ctx.createOscillator();
+    const gainNode = ctx.createGain();
+
+    oscillator.type = "sine";
+    oscillator.frequency.setValueAtTime(1200 + i * 400, now + i * 0.1);
+    oscillator.frequency.exponentialRampToValueAtTime(1800 + i * 200, now + 0.05 + i * 0.1);
+    oscillator.frequency.exponentialRampToValueAtTime(1000 + i * 300, now + 0.1 + i * 0.1);
+
+    gainNode.gain.setValueAtTime(0.12, now + i * 0.1);
+    gainNode.gain.exponentialRampToValueAtTime(0.01, now + 0.12 + i * 0.1);
+
+    oscillator.connect(gainNode);
+    gainNode.connect(ctx.destination);
+
+    oscillator.start(now + i * 0.1);
+    oscillator.stop(now + 0.15 + i * 0.1);
+  }
+};

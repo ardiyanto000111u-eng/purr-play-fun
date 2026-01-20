@@ -1,7 +1,7 @@
 import { motion } from "framer-motion";
 import { Check } from "lucide-react";
 
-type AnimalType = "fish" | "mouse" | "butterfly";
+type AnimalType = "fish" | "mouse" | "butterfly" | "laser" | "ladybug" | "bird";
 
 interface AnimalSelectorProps {
   selected: AnimalType[];
@@ -13,11 +13,14 @@ const animals: { type: AnimalType; emoji: string; name: string; premium: boolean
   { type: "fish", emoji: "🐟", name: "Fish", premium: false },
   { type: "mouse", emoji: "🐭", name: "Mouse", premium: false },
   { type: "butterfly", emoji: "🦋", name: "Butterfly", premium: false },
+  { type: "laser", emoji: "🔴", name: "Laser", premium: false },
+  { type: "ladybug", emoji: "🐞", name: "Ladybug", premium: false },
+  { type: "bird", emoji: "🐦", name: "Bird", premium: false },
 ];
 
 const AnimalSelector = ({ selected, onToggle, isPremium = true }: AnimalSelectorProps) => {
   return (
-    <div className="grid grid-cols-3 gap-4">
+    <div className="grid grid-cols-3 gap-3">
       {animals.map((animal, index) => {
         const isSelected = selected.includes(animal.type);
         const isLocked = animal.premium && !isPremium;
@@ -30,7 +33,7 @@ const AnimalSelector = ({ selected, onToggle, isPremium = true }: AnimalSelector
             transition={{ delay: index * 0.1 }}
             onClick={() => !isLocked && onToggle(animal.type)}
             disabled={isLocked}
-            className={`relative p-6 rounded-3xl transition-all duration-300 ${
+            className={`relative p-4 rounded-2xl transition-all duration-300 ${
               isSelected
                 ? "bg-primary shadow-playful scale-105"
                 : "bg-card hover:bg-muted shadow-soft"
@@ -47,14 +50,14 @@ const AnimalSelector = ({ selected, onToggle, isPremium = true }: AnimalSelector
             )}
             
             <motion.span 
-              className="text-5xl block mb-3"
+              className="text-4xl block mb-2"
               animate={isSelected ? { scale: [1, 1.2, 1] } : {}}
               transition={{ duration: 0.3 }}
             >
               {animal.emoji}
             </motion.span>
             
-            <span className={`font-display font-bold text-lg ${
+            <span className={`font-display font-bold text-sm ${
               isSelected ? "text-primary-foreground" : "text-foreground"
             }`}>
               {animal.name}
