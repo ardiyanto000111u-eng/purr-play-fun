@@ -1,28 +1,67 @@
-import { useState } from "react";
+import { useState, useRef, useCallback } from "react";
 import HomeScreen from "@/components/HomeScreen";
 import GameScreen from "@/components/GameScreen";
-
-type AnimalType = "fish" | "mouse" | "butterfly" | "laser" | "ladybug" | "bird";
+import StatsScreen from "@/components/StatsScreen";
+import { useStats, AnimalType } from "@/hooks/useStats";
 
 const Index = () => {
-  const [isPlaying, setIsPlaying] = useState(false);
+  const [screen, setScreen] = useState<"home" | "game" | "stats">("home");
   const [selectedAnimals, setSelectedAnimals] = useState<AnimalType[]>([]);
+  const sessionStartRef = useRef<number>(0);
+  const sessionCatchesRef = useRef<Record<AnimalType, number>>({
+    fish: 0, mouse: 0, butterfly: 0, laser: 0, ladybug: 0, bird: 0,
+  });
+  
+  const { stats, recordCatch, startSession, endSession, getFavoriteAnimal } = useStats();
 
   const handleStartGame = (animals: AnimalType[]) => {
     setSelectedAnimals(animals);
-    setIsPlaying(true);
+    sessionStartRef.current = startSession();
+    sessionCatchesRef.current = {
+      fish: 0, mouse: 0, butterfly: 0, laser: 0, ladybug: 0, bird: 0,
+    };
+    setScreen("game");
   };
 
+  const handleCatch = useCallback((animalType: AnimalType) => {
+    recordCatch(animalType);
+    sessionCatchesRef.current[animalType]++;
+  }, [recordCatch]);
+
   const handleExitGame = () => {
-    setIsPlaying(false);
+    if (sessionStartRef.current > 0) {
+      endSession(sessionStartRef.current, sessionCatchesRef.current);
+    }
+    setScreen("home");
     setSelectedAnimals([]);
   };
 
-  if (isPlaying) {
-    return <GameScreen selectedAnimals={selectedAnimals} onExit={handleExitGame} />;
+  if (screen === "stats") {
+    return (
+      <StatsScreen
+        stats={stats}
+        favoriteAnimal={getFavoriteAnimal()}
+        onBack={() => setScreen("home")}
+      />
+    );
   }
 
-  return <HomeScreen onStartGame={handleStartGame} />;
+  if (screen === "game") {
+    return (
+      <GameScreen
+        selectedAnimals={selectedAnimals}
+        onExit={handleExitGame}
+        onCatch={handleCatch}
+      />
+    );
+  }
+
+  return (
+    <HomeScreen
+      onStartGame={handleStartGame}
+      onOpenStats={() => setScreen("stats")}
+    />
+  );
 };
 
 export default Index;

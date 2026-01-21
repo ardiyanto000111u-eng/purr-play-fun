@@ -8,19 +8,20 @@ type AnimalType = "fish" | "mouse" | "butterfly" | "laser" | "ladybug" | "bird";
 interface GameScreenProps {
   selectedAnimals: AnimalType[];
   onExit: () => void;
+  onCatch: (animalType: AnimalType) => void;
 }
 
-const GameScreen = ({ selectedAnimals, onExit }: GameScreenProps) => {
+const GameScreen = ({ selectedAnimals, onExit, onCatch }: GameScreenProps) => {
   const [catchCount, setCatchCount] = useState(0);
   const [soundEnabled, setSoundEnabled] = useState(true);
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [speed, setSpeed] = useState(1);
   const [background, setBackground] = useState<"water" | "grass" | "floor">("water");
 
-  const handleCatch = useCallback(() => {
+  const handleCatch = useCallback((animalType: AnimalType) => {
     setCatchCount((prev) => prev + 1);
-    // Sound effect could be added here
-  }, []);
+    onCatch(animalType);
+  }, [onCatch]);
 
   return (
     <div className="fixed inset-0 overflow-hidden">

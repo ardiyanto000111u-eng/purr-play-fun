@@ -1,15 +1,16 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { Play, Info } from "lucide-react";
+import { Play, Info, BarChart2 } from "lucide-react";
 import AnimalSelector from "./AnimalSelector";
 
 type AnimalType = "fish" | "mouse" | "butterfly" | "laser" | "ladybug" | "bird";
 
 interface HomeScreenProps {
   onStartGame: (animals: AnimalType[]) => void;
+  onOpenStats: () => void;
 }
 
-const HomeScreen = ({ onStartGame }: HomeScreenProps) => {
+const HomeScreen = ({ onStartGame, onOpenStats }: HomeScreenProps) => {
   const [selectedAnimals, setSelectedAnimals] = useState<AnimalType[]>(["fish"]);
   const [showDisclaimer, setShowDisclaimer] = useState(false);
 
@@ -90,17 +91,28 @@ const HomeScreen = ({ onStartGame }: HomeScreenProps) => {
           Start Playing!
         </motion.button>
 
-        {/* Disclaimer button */}
-        <motion.button
+        {/* Bottom buttons */}
+        <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.8 }}
-          onClick={() => setShowDisclaimer(true)}
-          className="mt-6 flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors"
+          className="mt-6 flex items-center gap-6"
         >
-          <Info className="w-4 h-4" />
-          <span className="text-sm font-body">Safety Information</span>
-        </motion.button>
+          <button
+            onClick={onOpenStats}
+            className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors"
+          >
+            <BarChart2 className="w-4 h-4" />
+            <span className="text-sm font-body">Play Stats</span>
+          </button>
+          <button
+            onClick={() => setShowDisclaimer(true)}
+            className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors"
+          >
+            <Info className="w-4 h-4" />
+            <span className="text-sm font-body">Safety Info</span>
+          </button>
+        </motion.div>
       </motion.div>
 
       {/* Decorative paw prints */}
