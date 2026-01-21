@@ -191,3 +191,90 @@ export const playBirdSound = () => {
     oscillator.stop(now + 0.15 + i * 0.1);
   }
 };
+
+// Spider creepy crawl sound
+export const playSpiderSound = () => {
+  const ctx = getAudioContext();
+  const now = ctx.currentTime;
+
+  // Quick scratchy taps
+  for (let i = 0; i < 5; i++) {
+    const oscillator = ctx.createOscillator();
+    const gainNode = ctx.createGain();
+    const filter = ctx.createBiquadFilter();
+
+    oscillator.type = "sawtooth";
+    oscillator.frequency.setValueAtTime(200 + Math.random() * 100, now + i * 0.02);
+
+    filter.type = "highpass";
+    filter.frequency.value = 400;
+
+    gainNode.gain.setValueAtTime(0.08, now + i * 0.02);
+    gainNode.gain.exponentialRampToValueAtTime(0.01, now + 0.03 + i * 0.02);
+
+    oscillator.connect(filter);
+    filter.connect(gainNode);
+    gainNode.connect(ctx.destination);
+
+    oscillator.start(now + i * 0.02);
+    oscillator.stop(now + 0.04 + i * 0.02);
+  }
+};
+
+// Fly buzzing sound
+export const playFlySound = () => {
+  const ctx = getAudioContext();
+  const now = ctx.currentTime;
+
+  const oscillator = ctx.createOscillator();
+  const gainNode = ctx.createGain();
+  const lfo = ctx.createOscillator();
+  const lfoGain = ctx.createGain();
+
+  // Main buzz
+  oscillator.type = "sawtooth";
+  oscillator.frequency.setValueAtTime(180, now);
+
+  // LFO for wobble
+  lfo.frequency.setValueAtTime(40, now);
+  lfoGain.gain.setValueAtTime(30, now);
+
+  lfo.connect(lfoGain);
+  lfoGain.connect(oscillator.frequency);
+
+  gainNode.gain.setValueAtTime(0.1, now);
+  gainNode.gain.exponentialRampToValueAtTime(0.01, now + 0.15);
+
+  oscillator.connect(gainNode);
+  gainNode.connect(ctx.destination);
+
+  lfo.start(now);
+  oscillator.start(now);
+  lfo.stop(now + 0.18);
+  oscillator.stop(now + 0.18);
+};
+
+// Gecko chirp/click sound
+export const playGeckoSound = () => {
+  const ctx = getAudioContext();
+  const now = ctx.currentTime;
+
+  // Gecko "chirp" - rapid clicks
+  for (let i = 0; i < 4; i++) {
+    const oscillator = ctx.createOscillator();
+    const gainNode = ctx.createGain();
+
+    oscillator.type = "sine";
+    oscillator.frequency.setValueAtTime(1500, now + i * 0.04);
+    oscillator.frequency.exponentialRampToValueAtTime(800, now + 0.02 + i * 0.04);
+
+    gainNode.gain.setValueAtTime(0.15, now + i * 0.04);
+    gainNode.gain.exponentialRampToValueAtTime(0.01, now + 0.03 + i * 0.04);
+
+    oscillator.connect(gainNode);
+    gainNode.connect(ctx.destination);
+
+    oscillator.start(now + i * 0.04);
+    oscillator.stop(now + 0.04 + i * 0.04);
+  }
+};

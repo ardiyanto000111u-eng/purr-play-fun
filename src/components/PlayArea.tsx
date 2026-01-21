@@ -6,6 +6,9 @@ import Butterfly from "./animals/Butterfly";
 import LaserDot from "./animals/LaserDot";
 import Ladybug from "./animals/Ladybug";
 import Bird from "./animals/Bird";
+import Spider from "./animals/Spider";
+import Fly from "./animals/Fly";
+import Gecko from "./animals/Gecko";
 import { 
   playFishSound, 
   playMouseSound, 
@@ -13,10 +16,13 @@ import {
   playLaserSound,
   playLadybugSound,
   playBirdSound,
+  playSpiderSound,
+  playFlySound,
+  playGeckoSound,
   playCatchSound 
 } from "@/utils/sounds";
 
-type AnimalType = "fish" | "mouse" | "butterfly" | "laser" | "ladybug" | "bird";
+type AnimalType = "fish" | "mouse" | "butterfly" | "laser" | "ladybug" | "bird" | "spider" | "fly" | "gecko";
 
 interface Animal {
   id: string;
@@ -46,6 +52,7 @@ const backgrounds = {
 const fishColors = ["#FF7B54", "#FFB26B", "#FF6B6B", "#4ECDC4", "#45B7D1"];
 const butterflyColors = ["#FFD93D", "#FF6B9D", "#C44EFF", "#4ECDC4", "#FF8C42"];
 const birdColors = ["#5DADE2", "#58D68D", "#F4D03F", "#EC7063", "#AF7AC5"];
+const geckoColors = ["#5DBE5D", "#7CB342", "#8BC34A", "#AED581", "#C5E1A5"];
 
 const PlayArea = ({ selectedAnimals, speed, background, soundEnabled, onCatch }: PlayAreaProps) => {
   const [animals, setAnimals] = useState<Animal[]>([]);
@@ -89,6 +96,8 @@ const PlayArea = ({ selectedAnimals, speed, background, soundEnabled, onCatch }:
         ? butterflyColors[Math.floor(Math.random() * butterflyColors.length)]
         : type === "bird"
         ? birdColors[Math.floor(Math.random() * birdColors.length)]
+        : type === "gecko"
+        ? geckoColors[Math.floor(Math.random() * geckoColors.length)]
         : undefined,
     };
   }, [getRandomPosition]);
@@ -117,6 +126,9 @@ const PlayArea = ({ selectedAnimals, speed, background, soundEnabled, onCatch }:
       laser: 5 * speed,
       ladybug: 1.8 * speed,
       bird: 2.5 * speed,
+      spider: 2.2 * speed,
+      fly: 3.5 * speed,
+      gecko: 2 * speed,
     };
 
     const animate = () => {
@@ -151,6 +163,12 @@ const PlayArea = ({ selectedAnimals, speed, background, soundEnabled, onCatch }:
             wobble = Math.sin(Date.now() / 50) * 4;
           } else if (animal.type === "bird") {
             wobble = Math.sin(Date.now() / 250) * 1.5;
+          } else if (animal.type === "fly") {
+            wobble = Math.sin(Date.now() / 40) * 3;
+          } else if (animal.type === "spider") {
+            wobble = Math.sin(Date.now() / 150) * 0.5;
+          } else if (animal.type === "gecko") {
+            wobble = Math.sin(Date.now() / 400) * 1;
           }
 
           const newX = animal.x + Math.cos(angle) * animalSpeed + Math.cos(angle + Math.PI/2) * wobble;
@@ -205,6 +223,15 @@ const PlayArea = ({ selectedAnimals, speed, background, soundEnabled, onCatch }:
         case "bird":
           playBirdSound();
           break;
+        case "spider":
+          playSpiderSound();
+          break;
+        case "fly":
+          playFlySound();
+          break;
+        case "gecko":
+          playGeckoSound();
+          break;
       }
       playCatchSound();
     }
@@ -247,6 +274,12 @@ const PlayArea = ({ selectedAnimals, speed, background, soundEnabled, onCatch }:
         return <Ladybug {...props} />;
       case "bird":
         return <Bird {...props} color={animal.color} />;
+      case "spider":
+        return <Spider {...props} />;
+      case "fly":
+        return <Fly {...props} />;
+      case "gecko":
+        return <Gecko {...props} color={animal.color} />;
     }
   };
 

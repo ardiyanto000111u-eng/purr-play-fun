@@ -1,7 +1,7 @@
 import { motion } from "framer-motion";
 import { Check } from "lucide-react";
 
-type AnimalType = "fish" | "mouse" | "butterfly" | "laser" | "ladybug" | "bird";
+type AnimalType = "fish" | "mouse" | "butterfly" | "laser" | "ladybug" | "bird" | "spider" | "fly" | "gecko";
 
 interface AnimalSelectorProps {
   selected: AnimalType[];
@@ -16,6 +16,9 @@ const animals: { type: AnimalType; emoji: string; name: string; premium: boolean
   { type: "laser", emoji: "🔴", name: "Laser", premium: false },
   { type: "ladybug", emoji: "🐞", name: "Ladybug", premium: false },
   { type: "bird", emoji: "🐦", name: "Bird", premium: false },
+  { type: "spider", emoji: "🕷️", name: "Spider", premium: false },
+  { type: "fly", emoji: "🪰", name: "Fly", premium: false },
+  { type: "gecko", emoji: "🦎", name: "Gecko", premium: false },
 ];
 
 const AnimalSelector = ({ selected, onToggle, isPremium = true }: AnimalSelectorProps) => {

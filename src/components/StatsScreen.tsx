@@ -15,6 +15,9 @@ const animalEmojis: Record<AnimalType, string> = {
   laser: "🔴",
   ladybug: "🐞",
   bird: "🐦",
+  spider: "🕷️",
+  fly: "🪰",
+  gecko: "🦎",
 };
 
 const animalNames: Record<AnimalType, string> = {
@@ -24,6 +27,9 @@ const animalNames: Record<AnimalType, string> = {
   laser: "Laser",
   ladybug: "Ladybug",
   bird: "Bird",
+  spider: "Spider",
+  fly: "Fly",
+  gecko: "Gecko",
 };
 
 const formatTime = (seconds: number) => {
