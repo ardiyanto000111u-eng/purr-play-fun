@@ -9,7 +9,7 @@ const Index = () => {
   const [selectedAnimals, setSelectedAnimals] = useState<AnimalType[]>([]);
   const sessionStartRef = useRef<number>(0);
   const sessionCatchesRef = useRef<Record<AnimalType, number>>({
-    fish: 0, mouse: 0, butterfly: 0, laser: 0, ladybug: 0, bird: 0,
+    fish: 0, mouse: 0, butterfly: 0, laser: 0, ladybug: 0, bird: 0, spider: 0, fly: 0, gecko: 0,
   });
   
   const { stats, recordCatch, startSession, endSession, getFavoriteAnimal } = useStats();
@@ -18,7 +18,7 @@ const Index = () => {
     setSelectedAnimals(animals);
     sessionStartRef.current = startSession();
     sessionCatchesRef.current = {
-      fish: 0, mouse: 0, butterfly: 0, laser: 0, ladybug: 0, bird: 0,
+      fish: 0, mouse: 0, butterfly: 0, laser: 0, ladybug: 0, bird: 0, spider: 0, fly: 0, gecko: 0,
     };
     setScreen("game");
   };

@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 
-type AnimalType = "fish" | "mouse" | "butterfly" | "laser" | "ladybug" | "bird";
+type AnimalType = "fish" | "mouse" | "butterfly" | "laser" | "ladybug" | "bird" | "spider" | "fly" | "gecko";
 
 interface PlaySession {
   date: string;
@@ -34,6 +34,9 @@ const getDefaultStats = (): Stats => ({
     laser: 0,
     ladybug: 0,
     bird: 0,
+    spider: 0,
+    fly: 0,
+    gecko: 0,
   },
   lastPlayDate: null,
 });

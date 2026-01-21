@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 import { Play, Info, BarChart2 } from "lucide-react";
 import AnimalSelector from "./AnimalSelector";
 
-type AnimalType = "fish" | "mouse" | "butterfly" | "laser" | "ladybug" | "bird";
+type AnimalType = "fish" | "mouse" | "butterfly" | "laser" | "ladybug" | "bird" | "spider" | "fly" | "gecko";
 
 interface HomeScreenProps {
   onStartGame: (animals: AnimalType[]) => void;
