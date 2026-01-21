@@ -34,7 +34,7 @@ interface PlayAreaProps {
   speed: number;
   background: "water" | "grass" | "floor";
   soundEnabled: boolean;
-  onCatch: () => void;
+  onCatch: (animalType: AnimalType) => void;
 }
 
 const backgrounds = {
@@ -182,7 +182,7 @@ const PlayArea = ({ selectedAnimals, speed, background, soundEnabled, onCatch }:
   }, [dimensions, speed, getRandomPosition, animals.length]);
 
   const handleCatch = (animal: Animal) => {
-    onCatch();
+    onCatch(animal.type);
     
     // Play animal-specific sound
     if (soundEnabled) {
