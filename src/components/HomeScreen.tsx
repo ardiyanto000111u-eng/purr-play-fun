@@ -91,20 +91,27 @@ const HomeScreen = ({ onStartGame, onOpenStats }: HomeScreenProps) => {
           Start Playing!
         </motion.button>
 
-        {/* Bottom buttons */}
+        {/* Stats Button */}
+        <motion.button
+          initial={{ y: 20, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ delay: 0.7 }}
+          onClick={onOpenStats}
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+          className="w-full max-w-xs py-5 px-8 rounded-full bg-secondary shadow-soft text-secondary-foreground font-display font-bold text-2xl flex items-center justify-center gap-3"
+        >
+          <BarChart2 className="w-8 h-8" />
+          Play Stats
+        </motion.button>
+
+        {/* Safety Info Link */}
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.8 }}
-          className="mt-6 flex items-center gap-6"
+          className="mt-4"
         >
-          <button
-            onClick={onOpenStats}
-            className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors"
-          >
-            <BarChart2 className="w-4 h-4" />
-            <span className="text-sm font-body">Play Stats</span>
-          </button>
           <button
             onClick={() => setShowDisclaimer(true)}
             className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors"
