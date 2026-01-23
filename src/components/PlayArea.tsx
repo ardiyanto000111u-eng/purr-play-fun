@@ -38,7 +38,8 @@ interface Animal {
 interface PlayAreaProps {
   selectedAnimals: AnimalType[];
   speed: number;
-  background: "water" | "grass" | "floor";
+  background: "water" | "grass" | "floor" | "custom";
+  customColor?: string;
   soundEnabled: boolean;
   onCatch: (animalType: AnimalType) => void;
 }
@@ -47,6 +48,7 @@ const backgrounds = {
   water: "bg-gradient-to-b from-blue-600 to-blue-800",
   grass: "bg-gradient-to-b from-green-600 to-green-800",
   floor: "bg-gradient-to-b from-amber-600 to-amber-800",
+  custom: "",
 };
 
 const fishColors = ["#FF7B54", "#FFB26B", "#FF6B6B", "#4ECDC4", "#45B7D1"];
@@ -54,7 +56,16 @@ const butterflyColors = ["#FFD93D", "#FF6B9D", "#C44EFF", "#4ECDC4", "#FF8C42"];
 const birdColors = ["#5DADE2", "#58D68D", "#F4D03F", "#EC7063", "#AF7AC5"];
 const geckoColors = ["#5DBE5D", "#7CB342", "#8BC34A", "#AED581", "#C5E1A5"];
 
-const PlayArea = ({ selectedAnimals, speed, background, soundEnabled, onCatch }: PlayAreaProps) => {
+// Helper to darken a hex color
+const adjustColor = (hex: string, amount: number): string => {
+  const num = parseInt(hex.replace("#", ""), 16);
+  const r = Math.max(0, Math.min(255, (num >> 16) + amount));
+  const g = Math.max(0, Math.min(255, ((num >> 8) & 0x00ff) + amount));
+  const b = Math.max(0, Math.min(255, (num & 0x0000ff) + amount));
+  return `#${((r << 16) | (g << 8) | b).toString(16).padStart(6, "0")}`;
+};
+
+const PlayArea = ({ selectedAnimals, speed, background, customColor, soundEnabled, onCatch }: PlayAreaProps) => {
   const [animals, setAnimals] = useState<Animal[]>([]);
   const [dimensions, setDimensions] = useState({ width: 0, height: 0 });
   const [catchEffects, setCatchEffects] = useState<{ id: string; x: number; y: number }[]>([]);
@@ -283,8 +294,15 @@ const PlayArea = ({ selectedAnimals, speed, background, soundEnabled, onCatch }:
     }
   };
 
+  const customStyle = background === "custom" && customColor ? {
+    background: `linear-gradient(to bottom, ${customColor}, ${adjustColor(customColor, -30)})`,
+  } : {};
+
   return (
-    <div className={`fixed inset-0 ${backgrounds[background]} overflow-hidden touch-none`}>
+    <div 
+      className={`fixed inset-0 ${backgrounds[background]} overflow-hidden touch-none`}
+      style={customStyle}
+    >
       {/* Decorative elements based on background */}
       {background === "water" && (
         <>

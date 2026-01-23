@@ -7,14 +7,27 @@ interface SettingsPanelProps {
   onClose: () => void;
   speed: number;
   onSpeedChange: (value: number) => void;
-  background: "water" | "grass" | "floor";
-  onBackgroundChange: (bg: "water" | "grass" | "floor") => void;
+  background: "water" | "grass" | "floor" | "custom";
+  onBackgroundChange: (bg: "water" | "grass" | "floor" | "custom") => void;
+  customColor: string;
+  onCustomColorChange: (color: string) => void;
 }
 
 const backgrounds: { id: "water" | "grass" | "floor"; emoji: string; name: string }[] = [
   { id: "water", emoji: "🌊", name: "Water" },
   { id: "grass", emoji: "🌿", name: "Grass" },
   { id: "floor", emoji: "🪵", name: "Floor" },
+];
+
+const colorPresets = [
+  { color: "#1e3a5f", name: "Deep Blue" },
+  { color: "#2d1b4e", name: "Purple" },
+  { color: "#1a1a2e", name: "Dark Night" },
+  { color: "#4a1942", name: "Magenta" },
+  { color: "#0d3b3b", name: "Teal" },
+  { color: "#3d2914", name: "Brown" },
+  { color: "#1f1f1f", name: "Charcoal" },
+  { color: "#2e4a3f", name: "Forest" },
 ];
 
 const SettingsPanel = ({
@@ -24,8 +37,15 @@ const SettingsPanel = ({
   onSpeedChange,
   background,
   onBackgroundChange,
+  customColor,
+  onCustomColorChange,
 }: SettingsPanelProps) => {
   if (!isOpen) return null;
+
+  const handleColorSelect = (color: string) => {
+    onCustomColorChange(color);
+    onBackgroundChange("custom");
+  };
 
   return (
     <motion.div
@@ -39,7 +59,7 @@ const SettingsPanel = ({
         initial={{ scale: 0.9, y: 20 }}
         animate={{ scale: 1, y: 0 }}
         onClick={(e) => e.stopPropagation()}
-        className="bg-card rounded-3xl p-6 w-full max-w-md shadow-playful"
+        className="bg-card rounded-3xl p-6 w-full max-w-md shadow-playful max-h-[90vh] overflow-y-auto"
       >
         <div className="flex items-center justify-between mb-6">
           <h2 className="font-display font-bold text-2xl text-foreground">Settings</h2>
@@ -70,8 +90,8 @@ const SettingsPanel = ({
         </div>
 
         {/* Background selection */}
-        <div>
-          <span className="font-body font-semibold text-foreground block mb-4">Background</span>
+        <div className="mb-8">
+          <span className="font-body font-semibold text-foreground block mb-4">Theme Background</span>
           <div className="grid grid-cols-3 gap-3">
             {backgrounds.map((bg) => (
               <button
@@ -91,6 +111,42 @@ const SettingsPanel = ({
                 </span>
               </button>
             ))}
+          </div>
+        </div>
+
+        {/* Custom color picker */}
+        <div>
+          <span className="font-body font-semibold text-foreground block mb-4">🎨 Custom Color</span>
+          
+          {/* Color presets */}
+          <div className="grid grid-cols-4 gap-3 mb-4">
+            {colorPresets.map((preset) => (
+              <button
+                key={preset.color}
+                onClick={() => handleColorSelect(preset.color)}
+                className={`w-full aspect-square rounded-xl transition-all ${
+                  background === "custom" && customColor === preset.color
+                    ? "ring-4 ring-primary ring-offset-2 ring-offset-card scale-110"
+                    : "hover:scale-105"
+                }`}
+                style={{ backgroundColor: preset.color }}
+                title={preset.name}
+              />
+            ))}
+          </div>
+
+          {/* Custom color input */}
+          <div className="flex items-center gap-3">
+            <input
+              type="color"
+              value={customColor}
+              onChange={(e) => handleColorSelect(e.target.value)}
+              className="w-12 h-12 rounded-xl cursor-pointer border-2 border-muted"
+            />
+            <div className="flex-1">
+              <span className="text-sm text-muted-foreground block">Pick any color</span>
+              <span className="font-mono text-foreground">{customColor.toUpperCase()}</span>
+            </div>
           </div>
         </div>
       </motion.div>
