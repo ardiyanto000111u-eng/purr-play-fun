@@ -69,14 +69,15 @@ const PlayArea = ({ selectedAnimals, speed, background, customColor, soundEnable
   const [animals, setAnimals] = useState<Animal[]>([]);
   const [dimensions, setDimensions] = useState({ width: 0, height: 0 });
   const [catchEffects, setCatchEffects] = useState<{ id: string; x: number; y: number }[]>([]);
+  const [isPortrait, setIsPortrait] = useState(false);
   const animationRef = useRef<number>();
 
   useEffect(() => {
     const updateDimensions = () => {
-      setDimensions({
-        width: window.innerWidth,
-        height: window.innerHeight,
-      });
+      const width = window.innerWidth;
+      const height = window.innerHeight;
+      setIsPortrait(height > width);
+      setDimensions({ width, height });
     };
     updateDimensions();
     window.addEventListener("resize", updateDimensions);
@@ -303,6 +304,21 @@ const PlayArea = ({ selectedAnimals, speed, background, customColor, soundEnable
       className={`fixed inset-0 ${backgrounds[background]} overflow-hidden touch-none`}
       style={customStyle}
     >
+      {/* Portrait mode overlay - prompt to rotate */}
+      {isPortrait && (
+        <div className="absolute inset-0 bg-black/80 z-50 flex flex-col items-center justify-center text-white">
+          <motion.div
+            animate={{ rotate: [0, -90, -90, 0] }}
+            transition={{ duration: 2, repeat: Infinity, repeatDelay: 1 }}
+            className="text-6xl mb-6"
+          >
+            📱
+          </motion.div>
+          <p className="text-xl font-semibold mb-2">Rotate Your Device</p>
+          <p className="text-white/70 text-sm">Turn to landscape mode for the best experience</p>
+        </div>
+      )}
+
       {/* Decorative elements based on background */}
       {background === "water" && (
         <>
