@@ -2,6 +2,7 @@ import { useState, useCallback } from "react";
 import PlayArea from "./PlayArea";
 import GameHeader from "./GameHeader";
 import SettingsPanel from "./SettingsPanel";
+import { useGamePreferences } from "@/hooks/useGamePreferences";
 
 type AnimalType = "fish" | "mouse" | "butterfly" | "laser" | "ladybug" | "bird" | "spider" | "fly" | "gecko";
 
@@ -12,12 +13,9 @@ interface GameScreenProps {
 }
 
 const GameScreen = ({ selectedAnimals, onExit, onCatch }: GameScreenProps) => {
+  const { preferences, updatePreference } = useGamePreferences();
   const [catchCount, setCatchCount] = useState(0);
-  const [soundEnabled, setSoundEnabled] = useState(true);
   const [settingsOpen, setSettingsOpen] = useState(false);
-  const [speed, setSpeed] = useState(1);
-  const [background, setBackground] = useState<"water" | "grass" | "floor" | "custom">("water");
-  const [customColor, setCustomColor] = useState("#1e3a5f");
 
   const handleCatch = useCallback((animalType: AnimalType) => {
     setCatchCount((prev) => prev + 1);
@@ -28,17 +26,17 @@ const GameScreen = ({ selectedAnimals, onExit, onCatch }: GameScreenProps) => {
     <div className="fixed inset-0 overflow-hidden">
       <PlayArea
         selectedAnimals={selectedAnimals}
-        speed={speed}
-        background={background}
-        customColor={customColor}
-        soundEnabled={soundEnabled}
+        speed={preferences.speed}
+        background={preferences.background}
+        customColor={preferences.customColor}
+        soundEnabled={preferences.soundEnabled}
         onCatch={handleCatch}
       />
 
       <GameHeader
         catchCount={catchCount}
-        soundEnabled={soundEnabled}
-        onToggleSound={() => setSoundEnabled(!soundEnabled)}
+        soundEnabled={preferences.soundEnabled}
+        onToggleSound={() => updatePreference("soundEnabled", !preferences.soundEnabled)}
         onOpenSettings={() => setSettingsOpen(true)}
         onExit={onExit}
       />
@@ -46,12 +44,12 @@ const GameScreen = ({ selectedAnimals, onExit, onCatch }: GameScreenProps) => {
       <SettingsPanel
         isOpen={settingsOpen}
         onClose={() => setSettingsOpen(false)}
-        speed={speed}
-        onSpeedChange={setSpeed}
-        background={background}
-        onBackgroundChange={setBackground}
-        customColor={customColor}
-        onCustomColorChange={setCustomColor}
+        speed={preferences.speed}
+        onSpeedChange={(v) => updatePreference("speed", v)}
+        background={preferences.background}
+        onBackgroundChange={(bg) => updatePreference("background", bg)}
+        customColor={preferences.customColor}
+        onCustomColorChange={(c) => updatePreference("customColor", c)}
       />
     </div>
   );
