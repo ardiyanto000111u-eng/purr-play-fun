@@ -16,7 +16,8 @@ const GameScreen = ({ selectedAnimals, onExit, onCatch }: GameScreenProps) => {
   const [soundEnabled, setSoundEnabled] = useState(true);
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [speed, setSpeed] = useState(1);
-  const [background, setBackground] = useState<"water" | "grass" | "floor">("water");
+  const [background, setBackground] = useState<"water" | "grass" | "floor" | "custom">("water");
+  const [customColor, setCustomColor] = useState("#1e3a5f");
 
   const handleCatch = useCallback((animalType: AnimalType) => {
     setCatchCount((prev) => prev + 1);
@@ -29,6 +30,7 @@ const GameScreen = ({ selectedAnimals, onExit, onCatch }: GameScreenProps) => {
         selectedAnimals={selectedAnimals}
         speed={speed}
         background={background}
+        customColor={customColor}
         soundEnabled={soundEnabled}
         onCatch={handleCatch}
       />
@@ -48,6 +50,8 @@ const GameScreen = ({ selectedAnimals, onExit, onCatch }: GameScreenProps) => {
         onSpeedChange={setSpeed}
         background={background}
         onBackgroundChange={setBackground}
+        customColor={customColor}
+        onCustomColorChange={setCustomColor}
       />
     </div>
   );
